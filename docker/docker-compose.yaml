@@ -1,0 +1,35 @@
+version: '2'
+services:
+
+  postgres:
+    image: sandbox/postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD:
+      POSTGRES_USER: docker
+      POSTGRES_DB: docker
+    networks:
+      - back-tier
+
+  camunda:
+      image: sandbox/camunda
+      ports:
+        - "8080:8080"
+      links:
+        - postgres
+      networks:
+        - front-tier
+        - back-tier
+      depends_on:
+        - postgres
+      volumes:
+        - ${PWD}/configs/bpm-platform.xml:/usr/local/tomcat/conf/bpm-platform.xml
+        - ${PWD}/configs/server.xml:/usr/local/tomcat/conf/server.xml
+
+
+networks:
+  front-tier:
+    driver: bridge
+  back-tier:
+    driver: bridge
