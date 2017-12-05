@@ -27,7 +27,7 @@ public class TaskListenerIT extends AbstractIT {
     private static final Logger logger = LoggerFactory.getLogger(TaskListenerIT.class);
 
     @Rule
-    public ProcessEngineRule processEngineRule = new ProcessEngineRule();
+    public ProcessEngineRule processEngineRule = new ProcessEngineRule("camunda-integration.cfg.xml");
 
     @Test
     @Deployment(resources = {"external_task_user_task_sync_start.bpmn"})

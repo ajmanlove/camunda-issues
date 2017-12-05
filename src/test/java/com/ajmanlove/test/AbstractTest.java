@@ -7,7 +7,6 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.camunda.bpm.engine.ExternalTaskService;
 import org.camunda.bpm.engine.externaltask.LockedExternalTask;
-import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,44 +23,13 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class AbstractIT {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractIT.class);
+public abstract class AbstractTest {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractTest.class);
 
     // TODO unsure if this would work on linux or windows...
     // This is the host ip that a container can use to contact the host in docker for mac
-    protected static final String CALLBACK_HOST = "192.168.65.1";
+    protected static final String CALLBACK_HOST = "localhost";
 
-    @BeforeClass
-    public static void setup() throws Exception {
-
-        int cntr = 0;
-        int timeout = 30;
-
-        Client client = ClientBuilder.newClient();
-        while (true) {
-
-            if (cntr >= timeout) {
-                throw new RuntimeException("Timed out waiting for docker setup");
-            }
-
-
-            try {
-
-                // Issue with getting response code from camunda rest...Unexpected end of file
-                client.target("http://localhost:8080/engine-rest/engine")
-                        .request(MediaType.APPLICATION_JSON)
-                        .get();
-
-                break;
-
-            } catch (Throwable e) {
-                logger.info("Awaiting integration system setup");
-                cntr ++;
-                Thread.sleep(1000);
-            }
-
-        }
-    }
 
     protected List<LockedExternalTask> awaitExtTask(ExternalTaskService ets, String workerId, String topic, int timeout) throws Exception {
         return TestHelper.awaitExtTask(ets,workerId,topic,timeout);
@@ -75,8 +43,5 @@ public abstract class AbstractIT {
     protected Future startHandler(NotificationHandler handler, AtomicBoolean shutdown) throws Exception {
         return TestHelper.startHandler(handler, shutdown);
     }
-
-
-
 
 }

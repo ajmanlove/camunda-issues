@@ -3,7 +3,10 @@ package com.ajmanlove.camunda.plugin.messages;
 public class Message {
 
     public enum Type {
-        USER_TASK_CREATED
+        USER_TASK_CREATED,
+        INCIDENT_CREATED,
+        INCIDENT_RESOLVED,
+        INCIDENT_DELETED
     }
 
     private Type messageType;
